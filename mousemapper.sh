@@ -5,6 +5,7 @@ action_type=POINTER_BUTTON
 pressed="pressed,"
 
 readarray -t devices <<<$(libinput list-devices | grep pointer -B3 | grep -o '/dev/input/event[1-9]*')
+keyboard=$(ls /dev/input/by-path/*-kbd)
 
 # COMMANDS MAP
 BTN_EXTRA=(KEY_LEFTMETA KEY_PAGEUP)
@@ -12,8 +13,8 @@ BTN_SIDE=(KEY_LEFTMETA KEY_PAGEDOWN)
 
 function pressKey(){
     device=$1; key=$2; value=$3
-    echo "pressing ${key} ${value}"
-    evemu-event /dev/input/${device} --sync --type ${event_type} --code ${key} --value ${value};
+    echo "pressing ${key} ${value} on device #${keyboard}"
+    evemu-event ${keyboard} --sync --type ${event_type} --code ${key} --value ${value};
 }
 
 function pressCommand(){
