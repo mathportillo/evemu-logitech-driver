@@ -18,6 +18,8 @@ These are just the default settings, you can customize them at the start of the 
 - Forward: Move to workspace above  (Super+Page up)
 - Back: Move to workspace below  (Super+Page down)
 
+Note, they will still trigger mouse events, to disable those use xmodmap https://unix.stackexchange.com/a/20595/38213
+
 ## Prerequisites
 The script depends on the following executables being available in your PATH:
 - libinput
