@@ -13,7 +13,7 @@ BTN_SIDE=(KEY_LEFTMETA KEY_PAGEDOWN)
 
 function pressKey(){
     device=$1; key=$2; value=$3
-    echo "pressing ${key} ${value} on device ${keyboard}"
+    echo "Press ${key} ${value} for ${device} on ${keyboard}"
     evemu-event ${keyboard} --sync --type ${event_type} --code ${key} --value ${value};
 }
 
