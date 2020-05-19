@@ -48,7 +48,7 @@ function mapDevice(){
     device=$1
     while read line; do
         parseEventLine ${line}
-    done < <(stdbuf -oL libinput debug-events --device ${device} & )
+    done < <(evtest ${device} | grep 'value 9000[0-9]' -A1  --line-buffered | grep 'EV_KEY' --line-buffered | stdbuf -oL sed 's/[(),]//g' | stdbuf -oL awk -v d=${device} -v a=${action_type}  '{ print d, a, "NA", $9, "NA", $11 }' & )
 }
 
 for device in ${devices[@]}; do
