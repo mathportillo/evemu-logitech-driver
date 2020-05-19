@@ -4,7 +4,7 @@ event_type=EV_KEY
 action_type=POINTER_BUTTON
 pressed="pressed,"
 
-readarray -t devices <<<$(libinput list-devices | grep pointer -B3 | grep -o '/dev/input/event[0-9]*')
+readarray -t devices <<<$(libinput list-devices | grep '  pointer' -B3 | grep -o '/dev/input/event[0-9]*')
 keyboard=$(ls /dev/input/by-path/*-kbd | head -1)
 
 # COMMANDS MAP
