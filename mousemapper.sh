@@ -2,7 +2,7 @@
 
 event_type=EV_KEY
 action_type=POINTER_BUTTON
-pressed="pressed,"
+pressed="1"
 
 readarray -t devices <<<$(libinput list-devices | grep pointer -B3 | grep -o '/dev/input/event[1-9]*')
 
