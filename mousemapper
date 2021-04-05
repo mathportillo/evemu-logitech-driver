@@ -1,15 +1,19 @@
 #!/bin/bash
 
-keyboard=$(libinput list-devices | grep keyboard -B4 | grep -E "keyboard$" -A1 | grep -o '/dev/input/event[1-9]*')
+keyboard=$(libinput list-devices | grep -v "MX Master" | grep keyboard -B4 | grep -E "Keyboard$" -A1 | grep -o '/dev/input/event[1-9]*')
+
 event_type=EV_KEY
 action_type=POINTER_BUTTON
+action_type_sidewheel=POINTER_AXIS
 pressed="pressed,"
 
 readarray -t devices <<<$(libinput list-devices | grep pointer -B4 | grep -o '/dev/input/event[0-9]*')
 
 # COMMANDS MAP
-BTN_EXTRA=(KEY_LEFTMETA KEY_PAGEUP)
-BTN_SIDE=(KEY_LEFTMETA KEY_PAGEDOWN)
+# BTN_EXTRA=(KEY_LEFTMETA KEY_PAGEUP)
+# BTN_SIDE=(KEY_LEFTMETA KEY_PAGEDOWN)
+SIDEWHEEL_UP=(KEY_VOLUMEUP)
+SIDEWHEEL_DOWN=(KEY_VOLUMEDOWN)
 
 function pressKey(){
     device=$1; key=$2; value=$3
@@ -38,10 +42,24 @@ function parseEventLine(){
     action=$2
     button=$4
     movement=$6
+    vert_value=$5
+    horiz_value=$7
 
     # compute only if right action
     if [ ${action} = ${action_type} ]; then
         pressCommand ${device} ${button} ${movement}
+
+    # handling sidewheel
+    elif [ ${action} = ${action_type_sidewheel} ]; then
+        if [ ${horiz_value:0:1} = "-" ]; then
+	    # simulate key press and key release
+	    pressCommand ${device} "SIDEWHEEL_UP" ${pressed}
+	    pressCommand ${device} "SIDEWHEEL_UP" 0 
+        elif [ ${vert_value} = "0.00" ]; then
+	    # simulate key press and key release
+            pressCommand ${device} "SIDEWHEEL_DOWN" ${pressed}
+	    pressCommand ${device} "SIDEWHEEL_DOWN" 0 
+	fi		
     fi
 }
 
