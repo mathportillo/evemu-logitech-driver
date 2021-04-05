@@ -10,8 +10,8 @@ pressed="pressed,"
 readarray -t devices <<<$(libinput list-devices | grep pointer -B4 | grep -o '/dev/input/event[0-9]*')
 
 # COMMANDS MAP
-BTN_EXTRA=(KEY_LEFTMETA KEY_PAGEUP)
-BTN_SIDE=(KEY_LEFTMETA KEY_PAGEDOWN)
+# BTN_EXTRA=(KEY_LEFTMETA KEY_PAGEUP)
+# BTN_SIDE=(KEY_LEFTMETA KEY_PAGEDOWN)
 SIDEWHEEL_UP=(KEY_VOLUMEUP)
 SIDEWHEEL_DOWN=(KEY_VOLUMEDOWN)
 
@@ -42,8 +42,9 @@ function parseEventLine(){
     action=$2
     button=$4
     movement=$6
+    vert_value=$5
     horiz_value=$7
-    
+
     # compute only if right action
     if [ ${action} = ${action_type} ]; then
         pressCommand ${device} ${button} ${movement}
@@ -54,7 +55,7 @@ function parseEventLine(){
 	    # simulate key press and key release
 	    pressCommand ${device} "SIDEWHEEL_UP" ${pressed}
 	    pressCommand ${device} "SIDEWHEEL_UP" 0 
-        else
+        elif [ ${vert_value} = "0.00" ]; then
 	    # simulate key press and key release
             pressCommand ${device} "SIDEWHEEL_DOWN" ${pressed}
 	    pressCommand ${device} "SIDEWHEEL_DOWN" 0 
